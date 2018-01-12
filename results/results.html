@@ -8,5 +8,11 @@
   <body dir="rtl">
     <h1>תוצאות יצוא</h1>
     <img id="img-main">
+    <script>
+          window.setResult = function(id, dataUrl) {
+              var elem = document.getElementById(id);
+              elem.src = dataUrl;
+          }
+      </script>
   </body>
 </html>
