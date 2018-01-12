@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- The following tag is not obeyed -->
+    <title>Timi Exporter</title>
+
+    <!--
+    <script>
+    // Inline scripts are not allowed
+    alert('Hello World');
+    </script>
+    -->
+
+    <!-- Referring scripts is allowed -->
+    <script src="timi_export.js"></script>
+
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+            width: 300px;
+            height: 100px;
+        }
+
+        div {
+            height: 100%;
+            width: 100%;
+            display: table;
+            font-family: "Tahoma", "Verdana";
+            font-size: 15px;
+            font-weight: bold;
+            text-shadow: 0px 0px 1px #000000;
+            background-color: #555;
+            color: #fff;
+        }
+
+        h1, h2 {
+            display: table-row;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        h2 {
+            background-color: #777;
+        }
+
+        .unselectable {
+            -webkit-user-select: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+<div class="unselectable">
+    <button id="export-page">Export Page</button>
+</div>
+</body>
+</html>
