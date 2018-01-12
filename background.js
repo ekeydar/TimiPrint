@@ -36,6 +36,11 @@ function printTab(tab) {
 function printDone(tab, data) {
     log(tab, "printDone");
     log(tab, "length = " + data.length);
+    chrome.tabs.create({
+        url: 'results.html'
+    }, function(resultTab) {
+        console.log(resultTab);
+    })
 }
 
 
