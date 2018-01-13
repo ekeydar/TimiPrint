@@ -1,1 +1,1 @@
-git archive -v -o ../TimiPrint.zip master
+git archive -v -o TimiPrint.zip master
