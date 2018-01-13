@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(
                 if (tabs.length == 1) {
                     let activeTab = tabs[0];
                     chrome.tabs.create({
-                        url: "http://localhost:9000/explore2/extension-results/",
+                        url: "https://timi.parks.org.il/explore2/extension-results/",
                         active: false,
                     }, function (resultTab) {
                         chrome.tabs.onUpdated.addListener(function (tabId , info) {
