@@ -32,6 +32,15 @@
       "js": [
         "page.js"
       ]
+    },
+    {
+      "matches": [
+        "http://localhost:9000/explore2/extension-results/",
+        "https://timi.parks.org.il/explore2/extension-results/"
+      ],
+      "js": [
+        "results.js"
+      ]
     }
   ]
 }
