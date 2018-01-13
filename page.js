@@ -21,8 +21,9 @@ chrome.runtime.onMessage.addListener(
             for (let li of lis) {
                 li.style.display = "none";
             }
+            let li = lis[index];
             lis[index].style.display = "block";
-            resp = true;
+            resp = li.getBoundingClientRect()
         }
         console.log("request = ", request, " resp =", resp);
         sendResponse(resp);

@@ -33,22 +33,23 @@ function log(tab, msg) {
 }
 
 function printMap(tab, resultTab, callback) {
-    console.log("start printing " + tab.url);
-    log(tab, "start printing...");
+    chrome.tabs.sendMessage(tab.id, {'command': 'map_rect'}, function (resp) {
+        let rect = {
+            x: resp.x,
+            y: resp.y,
+            w: resp.width,
+            h: resp.height
+        };
+        cropScreenshot(tab, resultTab, rect, callback);
+    });
+}
+
+function cropScreenshot(tab, resultTab, rect, callback) {
     chrome.tabs.captureVisibleTab(null, {
         format: 'png'
     }, function (data) {
-        console.log("sending message");
-        chrome.tabs.sendMessage(tab.id, {'command': 'map_rect'}, function (resp) {
-            let rect = {
-                x: resp.x,
-                y: resp.y,
-                w: resp.width,
-                h: resp.height
-            };
-            addImage(resultTab, data, rect, callback);
-        });
-    })
+        addImage(resultTab, data, rect, callback);
+    });
 }
 
 function printResearch(tab, resultTab) {
@@ -64,9 +65,15 @@ function printLi(tab, resultTab, liIndex, lisCount) {
     log(tab, "in printLi liIndex = " + liIndex + " lisCount = " + lisCount);
     if (liIndex < lisCount) {
         chrome.tabs.sendMessage(tab.id, {'command': 'show_li','index': liIndex}, function (resp) {
-            window.setTimeout(function() {
+            let rect = {
+                x: resp.x,
+                y: resp.y,
+                w: resp.width,
+                h: resp.height
+            };
+            cropScreenshot(tab, resultTab, rect, function() {
                 printLi(tab, resultTab, liIndex + 1, lisCount);
-            },2000);
+            });
         });
     }
 }
@@ -76,7 +83,8 @@ function addImage(resultTab, data, rect, callback) {
     log(resultTab, "length = " + data.length);
     cropImage(data, rect, function (cropUrl) {
         chrome.tabs.executeScript(resultTab.id, {
-            'code': 'var elem = document.getElementById("img-main") ; console.log(elem); elem.src="' + cropUrl + '"'
+            'code': 'var elem = document.createElement("img") ; elem.src="' + cropUrl + '";' +
+                'document.getElementById("results").appendChild(elem);'
         }, function() {
             callback();
         });
