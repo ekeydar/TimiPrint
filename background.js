@@ -9,11 +9,14 @@ chrome.runtime.onMessage.addListener(
             chrome.tabs.query({active: true}, function (tabs) {
                 console.log("after query tabs = ", tabs);
                 if (tabs.length == 1) {
+                    let activeTab = tabs[0];
                     chrome.tabs.create({
                         url: 'http://localhost:9005/results.html',
                         active: false,
                     }, function (resultTab) {
-                        printTab(tabs[0], resultTab);
+                        printMap(activeTab, resultTab, function() {
+                            printResearch(activeTab, resultTab)
+                        });
                     });
                 }
             })
@@ -29,7 +32,7 @@ function log(tab, msg) {
     });
 }
 
-function printTab(tab, resultTab) {
+function printMap(tab, resultTab, callback) {
     console.log("start printing " + tab.url);
     log(tab, "start printing...");
     chrome.tabs.captureVisibleTab(null, {
@@ -43,17 +46,39 @@ function printTab(tab, resultTab) {
                 w: resp.width,
                 h: resp.height
             };
-            addImage(resultTab, data, rect);
+            addImage(resultTab, data, rect, callback);
         });
     })
 }
 
-function addImage(resultTab, data, rect) {
+function printResearch(tab, resultTab) {
+    log(tab,"print research starts");
+
+    chrome.tabs.sendMessage(tab.id, {'command': 'lis_count'}, function (resp) {
+        let lisCount = resp;
+        printLi(tab, resultTab, 0, lisCount);
+    });
+}
+
+function printLi(tab, resultTab, liIndex, lisCount) {
+    log(tab, "in printLi liIndex = " + liIndex + " lisCount = " + lisCount);
+    if (liIndex < lisCount) {
+        chrome.tabs.sendMessage(tab.id, {'command': 'show_li','index': liIndex}, function (resp) {
+            window.setTimeout(function() {
+                printLi(tab, resultTab, liIndex + 1, lisCount);
+            },2000);
+        });
+    }
+}
+
+function addImage(resultTab, data, rect, callback) {
     log(resultTab, "printDone");
     log(resultTab, "length = " + data.length);
     cropImage(data, rect, function (cropUrl) {
         chrome.tabs.executeScript(resultTab.id, {
             'code': 'var elem = document.getElementById("img-main") ; console.log(elem); elem.src="' + cropUrl + '"'
+        }, function() {
+            callback();
         });
     });
 }
