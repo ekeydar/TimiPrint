@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(
         if (request.print) {
             console.log(request, sender);
 
-            chrome.tabs.query({active: true}, function (tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 console.log("after query tabs = ", tabs);
                 if (tabs.length == 1) {
                     let activeTab = tabs[0];
